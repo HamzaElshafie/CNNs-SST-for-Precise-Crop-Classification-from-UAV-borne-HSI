@@ -1,1 +1,1 @@
-# Spectral-Spatial-Transformers-for-Precise-Crop-Classification-from-UAV-borne-Hyperspectral-Images
+# Spectral-Spatial Transformers for Precise Crop Classification from UAV-borne Hyperspectral Images
