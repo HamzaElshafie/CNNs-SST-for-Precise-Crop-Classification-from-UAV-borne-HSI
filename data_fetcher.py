@@ -31,8 +31,9 @@ def download_specific_dataset_from_kaggle(base_path, kaggle_dataset, kaggle_json
 
     return dataset_folder
 
-def loadData(dataset, kaggle_json_path):
-    base_path = 'Data'
+def loadData(dataset, kaggle_json_path, base_path):
+    if base_path is None:
+        base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'Data'))
     os.makedirs(base_path, exist_ok=True)
 
     kaggle_dataset = 'rupeshkumaryadav/whu-hyperspectral-dataset'
