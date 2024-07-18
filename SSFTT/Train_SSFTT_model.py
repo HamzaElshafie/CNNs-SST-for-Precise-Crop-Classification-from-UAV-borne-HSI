@@ -36,6 +36,26 @@ def loadDataWrapper(dataset, kaggle_json_path):
     
     return data, labels
 
+def applyPCA(X, numComponents):
+    newX = np.reshape(X, (-1, X.shape[2]))
+    pca = PCA(n_components=numComponents, whiten=True)
+    newX = pca.fit_transform(newX)
+    newX = np.reshape(newX, (X.shape[0], X.shape[1], numComponents))
+
+    return newX
+
+def create_data_loader():
+    X, y = loadData()
+    pca_components = 30
+
+    print('Hyperspectral data shape: ', X.shape)
+    print('Label shape: ', y.shape)
+
+    print('\n... ... PCA tranformation ... ...')
+    X_pca = applyPCA(X, numComponents=pca_components)
+    print('Data shape after PCA: ', X_pca.shape)
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Load dataset and train model.')
     parser.add_argument('--dataset', type=str, required=True, choices=dataset_mapping.keys(), help='Dataset name (HanChuan, HongHu, LongKou)')
@@ -46,5 +66,4 @@ if __name__ == "__main__":
     # Use loadDataWrapper to load data and labels
     data, labels = loadDataWrapper(args.dataset, args.kaggle_json_path)
 
-    print('Data shape:', data.shape)
-    print('Labels shape:', labels.shape)
+    train_loader, test_loader, all_data_loader, y_all= create_data_loader()
