@@ -31,7 +31,7 @@ def download_specific_dataset_from_kaggle(base_path, kaggle_dataset, kaggle_json
 
     return dataset_folder
 
-def loadData(dataset, kaggle_json_path, base_path):
+def loadData(dataset, kaggle_json_path, base_path=None):
     if base_path is None:
         base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'Data'))
     os.makedirs(base_path, exist_ok=True)

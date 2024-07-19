@@ -17,13 +17,20 @@ import argparse
 import scipy.io as sio
 import SSFTTnet
 import get_cls_map
-from data_fetcher import loadData
-
-BATCH_SIZE_TRAIN = 64
 
 # Ensure the main directory is in the system path to import data_fetcher
 main_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
 sys.path.append(main_dir)
+
+from data_fetcher import loadData
+
+BATCH_SIZE_TRAIN = 64
+
+NUM_CLASSES = {
+    'HanChuan': 16,
+    'HongHu': 22,
+    'LongKou': 9
+}
 
 dataset_mapping = {
     'HanChuan': 'WHU-Hi-HanChuan',
@@ -123,9 +130,9 @@ def create_data_loader(dataset, kaggle_json_path):
 
     return train_loader, test_loader, all_data_loader, y
 
-def train(train_loader, epochs):
+def train(train_loader, epochs, num_classes):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    net = SSFTTnet.SSFTTnet().to(device)
+    net = SSFTTnet.SSFTTnet(num_classes).to(device)
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(net.parameters(), lr=0.001)
 
@@ -223,9 +230,11 @@ if __name__ == "__main__":
     os.makedirs("cls_result", exist_ok=True)
     os.makedirs("cls_params", exist_ok=True)
 
+    num_classes = NUM_CLASSES[args.dataset]
+
     train_loader, test_loader, all_data_loader, y_all= create_data_loader(args.dataset, args.kaggle_json_path)
     tic1 = time.perf_counter()
-    net, device = train(train_loader, epochs=100)
+    net, device = train(train_loader, num_classes, epochs=100)
     torch.save(net.state_dict(), f'cls_params/SSFTTnet_params_{args.dataset}.pth')
     toc1 = time.perf_counter()
     tic2 = time.perf_counter()
@@ -254,4 +263,4 @@ if __name__ == "__main__":
         x_file.write('\n')
         x_file.write('{}'.format(confusion))
 
-    get_cls_map.get_cls_map(net, device, all_data_loader, y_all)
+    # get_cls_map.get_cls_map(net, device, all_data_loader, y_all)
