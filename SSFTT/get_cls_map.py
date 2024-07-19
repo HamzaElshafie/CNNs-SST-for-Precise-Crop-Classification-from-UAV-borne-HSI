@@ -44,11 +44,14 @@ def list_to_colormap(x_list, dataset):
             [255, 255, 255],   # Roads and houses
             [128, 0, 128]      # Mixed weed
     ]
-    
+
     y = np.zeros((x_list.shape[0], 3))
     for index, item in enumerate(x_list):
-        if item < len(colors):
-            y[index] = np.array(colors[item]) / 255.
+        item = int(item)  # Ensure item is an integer for indexing
+        if item == 0:
+            y[index] = np.array([0, 0, 0]) / 255.
+        else:
+            y[index] = np.array(colors[item - 1]) / 255.
     
     return y
 
@@ -97,6 +100,7 @@ def get_cls_map(net, device, all_data_loader, y, dataset):
 
     y_re = np.reshape(y_list, (y.shape[0], y.shape[1], 3))
     gt_re = np.reshape(y_gt, (y.shape[0], y.shape[1], 3))
+
     classification_map(y_re, y, 300, f'classification_maps/{dataset}_predictions.eps')
     classification_map(y_re, y, 300, f'classification_maps/{dataset}_predictions.png')
     classification_map(gt_re, y, 300, f'classification_maps/{dataset}_gt.png')
