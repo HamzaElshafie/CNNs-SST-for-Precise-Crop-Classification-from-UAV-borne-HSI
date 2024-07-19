@@ -33,11 +33,17 @@ def list_to_colormap(x_list, dataset):
             [240, 230, 140], [128, 0, 0], [189, 183, 107], [255, 218, 185]  
         ]
     elif dataset == 'LongKou':
-        colors = [
-            [255, 0, 0], [255, 165, 0], [255, 255, 0], [0, 128, 0], [0, 255, 0], [0, 0, 255],
-            [0, 255, 255], [169, 169, 169], [255, 0, 255], [128, 0, 128], [0, 0, 128],
-            [139, 69, 19], [255, 20, 147], [0, 255, 123], [0, 100, 0], [101, 174, 255]  
-        ]
+       colors = [
+            [255, 0, 0],       # Corn
+            [255, 165, 0],     # Cotton
+            [255, 255, 0],     # Sesame
+            [0, 255, 0],       # Broad-leaf soybean
+            [0, 255, 255],     # Narrow-leaf soybean
+            [0, 128, 128],     # Rice
+            [0, 0, 255],       # Water
+            [255, 255, 255],   # Roads and houses
+            [128, 0, 128]      # Mixed weed
+    ]
     
     y = np.zeros((x_list.shape[0], 3))
     for index, item in enumerate(x_list):
