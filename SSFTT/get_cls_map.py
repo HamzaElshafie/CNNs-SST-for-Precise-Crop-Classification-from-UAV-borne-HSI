@@ -23,20 +23,20 @@ def list_to_colormap(x_list, dataset):
         colors = [
             [147, 67, 46], [0, 255, 123], [0, 0, 255], [255, 100, 0], [0, 255, 123], [255, 0, 0], 
             [0, 255, 0], [0, 255, 255], [128, 128, 128], [255, 255, 0], [0, 128, 255], [0, 0, 128],
-            [128, 0, 128], [0, 128, 0], [128, 128, 0], [0, 0, 0]  # etc.
+            [128, 0, 128], [0, 128, 0], [128, 128, 0], [0, 0, 0]
         ]
     elif dataset == 'HongHu':
         colors = [
             [255, 0, 0], [0, 0, 0], [139, 69, 19], [255, 255, 0], [169, 169, 169], [255, 165, 0],
             [0, 255, 0], [0, 128, 0], [0, 255, 255], [0, 0, 255], [255, 20, 147], [255, 105, 180],
             [128, 0, 128], [75, 0, 130], [238, 130, 238], [255, 69, 0], [255, 228, 225], [255, 222, 173],
-            [240, 230, 140], [128, 0, 0], [189, 183, 107], [255, 218, 185]  # etc.
+            [240, 230, 140], [128, 0, 0], [189, 183, 107], [255, 218, 185]  
         ]
     elif dataset == 'LongKou':
         colors = [
             [255, 0, 0], [255, 165, 0], [255, 255, 0], [0, 128, 0], [0, 255, 0], [0, 0, 255],
             [0, 255, 255], [169, 169, 169], [255, 0, 255], [128, 0, 128], [0, 0, 128],
-            [139, 69, 19], [255, 20, 147], [0, 255, 123], [0, 100, 0], [101, 174, 255]  # etc.
+            [139, 69, 19], [255, 20, 147], [0, 255, 123], [0, 100, 0], [101, 174, 255]  
         ]
     
     y = np.zeros((x_list.shape[0], 3))
@@ -63,7 +63,6 @@ def classification_map(map, ground_truth, dpi, save_path):
 
 def test(device, net, test_loader):
     count = 0
-    # 模型测试
     net.eval()
     y_pred_test = 0
     y_test = 0
@@ -82,7 +81,6 @@ def test(device, net, test_loader):
     return y_pred_test, y_test
 
 def get_cls_map(net, device, all_data_loader, y, dataset):
-
     y_pred, y_new = test(device, net, all_data_loader)
     cls_labels = get_classification_map(y_pred, y)
     x = np.ravel(cls_labels)
@@ -93,10 +91,7 @@ def get_cls_map(net, device, all_data_loader, y, dataset):
 
     y_re = np.reshape(y_list, (y.shape[0], y.shape[1], 3))
     gt_re = np.reshape(y_gt, (y.shape[0], y.shape[1], 3))
-    classification_map(y_re, y, 300,
-                       'classification_maps/' + 'IP_predictions.eps')
-    classification_map(y_re, y, 300,
-                       'classification_maps/' + 'IP_predictions.png')
-    classification_map(gt_re, y, 300,
-                       'classification_maps/' + 'IP_gt.png')
+    classification_map(y_re, y, 300, f'classification_maps/{dataset}_predictions.eps')
+    classification_map(y_re, y, 300, f'classification_maps/{dataset}_predictions.png')
+    classification_map(gt_re, y, 300, f'classification_maps/{dataset}_gt.png')
     print('------Get classification maps successful-------')
