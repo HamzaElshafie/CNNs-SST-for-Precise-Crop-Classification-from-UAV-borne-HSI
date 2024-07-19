@@ -264,4 +264,4 @@ if __name__ == "__main__":
         x_file.write('\n')
         x_file.write('{}'.format(confusion))
 
-    # get_cls_map.get_cls_map(net, device, all_data_loader, y_all)
+    get_cls_map.get_cls_map(net, device, all_data_loader, y_all, args.dataset)
