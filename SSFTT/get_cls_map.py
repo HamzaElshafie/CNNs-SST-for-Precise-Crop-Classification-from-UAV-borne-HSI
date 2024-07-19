@@ -41,10 +41,8 @@ def list_to_colormap(x_list, dataset):
     
     y = np.zeros((x_list.shape[0], 3))
     for index, item in enumerate(x_list):
-        if item == 0:
-            y[index] = np.array([0, 0, 0]) / 255.
-        else:
-            y[index] = np.array(colors[item - 1]) / 255.
+        if item < len(colors):
+            y[index] = np.array(colors[item]) / 255.
     
     return y
 
