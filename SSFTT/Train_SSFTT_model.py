@@ -130,7 +130,7 @@ def create_data_loader(dataset, kaggle_json_path):
 
     return train_loader, test_loader, all_data_loader, y
 
-def train(train_loader, epochs, num_classes):
+def train(train_loader, num_classes, epochs):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     net = SSFTTnet.SSFTTnet(num_classes).to(device)
     criterion = nn.CrossEntropyLoss()
