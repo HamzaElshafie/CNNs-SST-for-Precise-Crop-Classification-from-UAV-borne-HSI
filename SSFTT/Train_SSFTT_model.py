@@ -132,7 +132,7 @@ def create_data_loader(dataset, kaggle_json_path):
 
 def train(train_loader, num_classes, epochs):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    net = SSFTTnet.SSFTTnet(num_classes).to(device)
+    net = SSFTTnet.SSFTTnet(in_channels=1, num_classes=num_classes).to(device)
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(net.parameters(), lr=0.001)
 
@@ -220,6 +220,7 @@ class TrainDS():
     
     def __len__(self):
         return self.len
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Load dataset and train model.')
