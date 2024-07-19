@@ -1,5 +1,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
+import os
+
+if 'COLAB_GPU' in os.environ:
+    main_dir = '/content/Spectral-Spatial-Transformers-for-Precise-Crop-Classification-from-UAV-borne-Hyperspectral-Images'
+else:
+    main_dir = ''
 
 def get_classification_map(y_pred, y):
 
@@ -101,7 +107,7 @@ def get_cls_map(net, device, all_data_loader, y, dataset):
     y_re = np.reshape(y_list, (y.shape[0], y.shape[1], 3))
     gt_re = np.reshape(y_gt, (y.shape[0], y.shape[1], 3))
 
-    classification_map(y_re, y, 300, f'classification_maps/{dataset}_predictions.eps')
-    classification_map(y_re, y, 300, f'classification_maps/{dataset}_predictions.png')
-    classification_map(gt_re, y, 300, f'classification_maps/{dataset}_gt.png')
+    classification_map(y_re, y, 300, f'{main_dir}/SSFTT/classification_maps/{dataset}_predictions.eps')
+    classification_map(y_re, y, 300, f'{main_dir}/SSFTT/classification_maps/{dataset}_predictions.png')
+    classification_map(gt_re, y, 300, f'{main_dir}/SSFTT/classification_maps/{dataset}_gt.png')
     print('------Get classification maps successful-------')
