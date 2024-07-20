@@ -27,28 +27,59 @@ def get_classification_map(y_pred, y):
 def list_to_colormap(x_list, dataset):
     if dataset == 'HanChuan':
         colors = [
-            [147, 67, 46], [0, 255, 123], [0, 0, 255], [255, 100, 0], [0, 255, 123], [255, 0, 0], 
-            [0, 255, 0], [0, 255, 255], [128, 128, 128], [255, 255, 0], [0, 128, 255], [0, 0, 128],
-            [128, 0, 128], [0, 128, 0], [128, 128, 0], [0, 0, 0]
+            [143, 41, 72], # Strawberry
+            [7, 247, 227], # Cowpea
+            [232, 16, 210], # Soybean
+            [137, 44, 168], #Sorghum
+            [132, 240, 216], # Water Spinach
+            [123, 237, 0], # Watermelon
+            [55, 184, 4], # Greens
+            [74, 250, 5], # Trees 
+            [30, 92, 20], # Grass
+            [247, 5, 5], # Red roof
+            [209, 182, 195], # Grey Roof
+            [224, 118, 72], # Plastic
+            [135, 60, 27], # Bare Soil
+            [255, 255, 255], # Road
+            [194, 93, 187], # Bright object
+            [13, 22, 209] # Water
         ]
     elif dataset == 'HongHu':
         colors = [
-            [255, 0, 0], [0, 0, 0], [139, 69, 19], [255, 255, 0], [169, 169, 169], [255, 165, 0],
-            [0, 255, 0], [0, 128, 0], [0, 255, 255], [0, 0, 255], [255, 20, 147], [255, 105, 180],
-            [128, 0, 128], [75, 0, 130], [238, 130, 238], [255, 69, 0], [255, 228, 225], [255, 222, 173],
-            [240, 230, 140], [128, 0, 0], [189, 183, 107], [255, 218, 185]  
+            [247, 5, 5], # Red roof
+            [255, 255, 255], # Road 
+            [143, 30, 71], # Bare Soil 
+            [255, 255, 0], # Cotton 
+            [224, 118, 72], # Cotton firewood 
+            [74, 250, 5], # Rape 
+            [55, 184, 4], # Chinese Cabbage
+            [30, 92, 20], # Pakchoi
+            [132, 240, 216], # Cabbage
+            [137, 44, 168], # Tuber Mustard
+            [209, 182, 195], # Brassica parachinensis
+            [13, 22, 209] # Brassica chinensis
+            [17, 4, 112], # Small brassica chinensis
+            [194, 93, 187], # Lactuca Sativa 
+            [135, 60, 27], # Celtuce 
+            [7, 247, 227], # Film covered lettuce 
+            [250, 167, 2], # Romaine lettuce
+            [123, 237, 0], # Carrot
+            [106, 115, 7], # White radish
+            [2, 113, 117], # Garlic sprout
+            [209, 182, 195], # Broad bean
+            [214, 143, 2] # Tree
         ]
     elif dataset == 'LongKou':
        colors = [
-            [255, 0, 0],       # Corn
-            [255, 165, 0],     # Cotton
-            [255, 255, 0],     # Sesame
-            [0, 255, 0],       # Broad-leaf soybean
-            [0, 255, 255],     # Narrow-leaf soybean
-            [0, 128, 128],     # Rice
-            [0, 0, 255],       # Water
-            [255, 255, 255],   # Roads and houses
-            [128, 0, 128]      # Mixed weed
+            [255, 0, 0], # Corn
+            [255, 165, 0], # Cotton
+            [255, 255, 0], # Sesame
+            [0, 255, 0], # Broad-leaf soybean
+            [0, 255, 255], # Narrow-leaf soybean
+            [0, 128, 128], # Rice
+            [0, 0, 255], # Water
+            [255, 255, 255], # Roads and houses
+            [128, 0, 128] # Mixed weed
     ]
 
     y = np.zeros((x_list.shape[0], 3))
