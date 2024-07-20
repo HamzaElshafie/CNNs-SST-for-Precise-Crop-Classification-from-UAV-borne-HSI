@@ -57,7 +57,7 @@ def list_to_colormap(x_list, dataset):
             [132, 240, 216], # Cabbage
             [137, 44, 168], # Tuber Mustard
             [209, 182, 195], # Brassica parachinensis
-            [13, 22, 209] # Brassica chinensis
+            [13, 22, 209], # Brassica chinensis
             [17, 4, 112], # Small brassica chinensis
             [194, 93, 187], # Lactuca Sativa 
             [135, 60, 27], # Celtuce 
