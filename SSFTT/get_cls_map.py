@@ -128,7 +128,14 @@ def test(device, net, test_loader):
 
 def get_cls_map(net, device, all_data_loader, y, dataset):
     y_pred, y_new = test(device, net, all_data_loader)
+
+    print(f"Shape of y_pred: {y_pred.shape}")
+    print(f"Shape of y: {y.shape}")
+    print(f"Type of y: {type(y)}")
+
     cls_labels = get_classification_map(y_pred, y)
+    print(f"Shape of cls_labels: {cls_labels.shape}")
+    
     x = np.ravel(cls_labels)
     gt = y.flatten()
 
