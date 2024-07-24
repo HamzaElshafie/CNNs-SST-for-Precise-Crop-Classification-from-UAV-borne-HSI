@@ -8,7 +8,6 @@ else:
     main_dir = ''
 
 def get_classification_map(y_pred, y):
-
     height = y.shape[0]
     width = y.shape[1]
     k = 0
@@ -19,10 +18,13 @@ def get_classification_map(y_pred, y):
             if target == 0:
                 continue
             else:
+                if k >= len(y_pred):
+                    print(f"Index k={k} is out of bounds for y_pred with length {len(y_pred)}")
+                    break
                 cls_labels[i][j] = y_pred[k]+1
                 k += 1
+    return cls_labels
 
-    return  cls_labels
 
 def list_to_colormap(x_list, dataset):
     if dataset == 'HanChuan':
