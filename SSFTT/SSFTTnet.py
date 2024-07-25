@@ -107,7 +107,7 @@ class Transformer(nn.Module):
         return x
 
 class SSFTTnet(nn.Module):
-    def __init__(self, in_channels=1, num_classes=NUM_CLASS, num_tokens=12, dim=64, depth=1, heads=8, mlp_dim=8, dropout=0.1, emb_dropout=0.1):
+    def __init__(self, in_channels=1, num_classes=9, num_tokens=12, dim=64, depth=1, heads=8, mlp_dim=8, dropout=0.1, emb_dropout=0.1, pca_components=30):
         super(SSFTTnet, self).__init__()
         self.L = num_tokens
         self.cT = dim
@@ -118,7 +118,7 @@ class SSFTTnet(nn.Module):
         )
 
         self.conv2d_features = nn.Sequential(
-            nn.Conv2d(in_channels=8*28, out_channels=64, kernel_size=(3, 3)),
+            nn.Conv2d(in_channels=8 * pca_components, out_channels=64, kernel_size=(3, 3)),
             nn.BatchNorm2d(64),
             nn.ReLU(),
         )
@@ -172,9 +172,13 @@ class SSFTTnet(nn.Module):
 
 
 if __name__ == '__main__':
-    model = SSFTTnet(num_classes=NUM_CLASS)
+    # Dummy example for testing the model initialization
+    pca_components = 30  # This would be determined dynamically in practice
+    model = SSFTTnet(num_classes=NUM_CLASS, pca_components=pca_components)
     model.eval()
     print(model)
-    input = torch.randn(64, 1, 30, 13, 13)
+
+    # Create a dummy input with the correct number of PCA components
+    input = torch.randn(64, 1, pca_components, 13, 13)
     y = model(input)
     print(y.size())
