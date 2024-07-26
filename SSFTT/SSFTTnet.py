@@ -148,7 +148,7 @@ class SSFTTnet(nn.Module):
     def forward(self, x, mask=None):
 
         x = self.conv3d_features(x)
-        x = rearrange(x, 'b c h w y -> b (c h) w y')
+        x = rearrange(x, 'b c d h w -> b (c d) h w') # [batch_size, 8 * depth, height, width]
         x = self.conv2d_features(x)
         x = rearrange(x,'b c h w -> b (h w) c')
 
