@@ -148,15 +148,10 @@ class SSFTTnet(nn.Module):
         torch.nn.init.normal_(self.nn1.bias, std=1e-6)
 
     def forward(self, x, mask=None):
-
         x = self.conv3d_features(x)
-        print('After 3D Conv: ', x.shape)
         x = rearrange(x, 'b c d h w -> b (c d) h w')
-        print('After Rearrange: ', x.shape)
         x = self.conv2d_features(x)
-        print('After 2D Conv: ', x.shape)
         x = rearrange(x, 'b c h w -> b (h w) c')
-        print('After Final Rearrange: ', x.shape)
 
         wa = rearrange(self.token_wA, 'b h w -> b w h')  # Transpose
         A = torch.einsum('bij,bjk->bik', x, wa)
