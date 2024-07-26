@@ -117,8 +117,10 @@ class SSFTTnet(nn.Module):
             nn.ReLU(),
         )
 
+        conv_output_depth = (pca_components - 3) + 1 / 1 # Calculates the output depth after the 3D conv because there is no padding
+
         self.conv2d_features = nn.Sequential(
-            nn.Conv2d(in_channels=8 * pca_components, out_channels=64, kernel_size=(3, 3)),
+            nn.Conv2d(in_channels=8 * conv_output_depth, out_channels=64, kernel_size=(3, 3)),
             nn.BatchNorm2d(64),
             nn.ReLU(),
         )
@@ -146,7 +148,7 @@ class SSFTTnet(nn.Module):
         torch.nn.init.normal_(self.nn1.bias, std=1e-6)
 
     def forward(self, x, mask=None):
-        
+
         x = self.conv3d_features(x)
         print('After 3D Conv: ', x.shape)
         x = rearrange(x, 'b c d h w -> b (c d) h w')
