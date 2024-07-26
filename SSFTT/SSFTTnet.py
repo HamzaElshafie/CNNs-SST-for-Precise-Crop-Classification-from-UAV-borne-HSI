@@ -117,7 +117,7 @@ class SSFTTnet(nn.Module):
             nn.ReLU(),
         )
 
-        conv_output_depth = (pca_components - 3) + 1 / 1 # Calculates the output depth after the 3D conv because there is no padding
+        conv_output_depth = int((pca_components - 3) + 1 / 1) # Calculates the output depth after the 3D conv because there is no padding
 
         self.conv2d_features = nn.Sequential(
             nn.Conv2d(in_channels=8 * conv_output_depth, out_channels=64, kernel_size=(3, 3)),
