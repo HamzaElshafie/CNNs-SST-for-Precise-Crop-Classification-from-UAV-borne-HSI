@@ -107,7 +107,7 @@ class Transformer(nn.Module):
         return x
 
 class SSFTTnet(nn.Module):
-    def __init__(self, in_channels=1, num_classes=9, num_tokens=10, dim=64, depth=1, heads=8, mlp_dim=8, dropout=0.1, emb_dropout=0.1, pca_components=30):
+    def __init__(self, in_channels=1, num_classes=9, num_tokens=8, dim=64, depth=1, heads=8, mlp_dim=8, dropout=0.1, emb_dropout=0.1, pca_components=30):
         super(SSFTTnet, self).__init__()
         self.L = num_tokens
         self.cT = dim
