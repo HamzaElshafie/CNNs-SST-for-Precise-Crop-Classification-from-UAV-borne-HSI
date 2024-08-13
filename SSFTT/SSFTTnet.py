@@ -173,7 +173,6 @@ class SSFTTnet(nn.Module):
 
 
 if __name__ == '__main__':
-    # Dummy example for testing the model initialization
     pca_components = 30  # This would be determined dynamically in practice
     model = SSFTTnet(num_classes=NUM_CLASS, pca_components=pca_components)
     model.eval()
