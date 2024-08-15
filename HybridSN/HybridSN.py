@@ -6,7 +6,7 @@ from torchinfo import summary
 NUM_CLASS = 9
 
 class HybridSN_network(nn.Module):
-    def __init__(self, num_classes):
+    def __init__(self, num_classes=9, pca_components=30):
         super(HybridSN_network, self).__init__()
 
         self.conv1 = nn.Sequential(
@@ -15,6 +15,8 @@ class HybridSN_network(nn.Module):
                     out_channels=8,
                     kernel_size=(3, 3, 7)),
                     nn.ReLU(inplace=True))
+
+        conv1_output_depth = int((pca_components - 3) + 1 / 1) # Calculates the output depth after the 3D conv because there is no padding
         
         self.conv2 = nn.Sequential(
                     nn.Conv3d(
@@ -23,6 +25,8 @@ class HybridSN_network(nn.Module):
                     kernel_size=(3, 3, 5)),
                     nn.ReLU(inplace=True))
         
+        conv2_output_depth = int((conv1_output_depth - 3) + 1 / 1) # Calculates the output depth after the 3D conv because there is no padding
+        
         self.conv3 = nn.Sequential(
                     nn.Conv3d(
                     in_channels=16,
@@ -30,9 +34,11 @@ class HybridSN_network(nn.Module):
                     kernel_size=(3, 3, 3)),
                     nn.ReLU(inplace=True))
         
+        conv3_output_depth = int((conv2_output_depth - 3) + 1 / 1) # Calculates the output depth after the 3D conv because there is no padding
+        
         self.conv4 = nn.Sequential(
                     nn.Conv2d(
-                    in_channels=576,
+                    in_channels=32 * conv3_output_depth,
                     out_channels=64,
                     kernel_size=(3, 3)),
                     nn.ReLU(inplace=True))
@@ -67,6 +73,7 @@ class HybridSN_network(nn.Module):
 if __name__ == '__main__':
     # Create dummy values for img_rows, img_columns, and band_dim
     img_rows, img_columns, band_dim = 550, 400, 270
-    model = HybridSN_network(num_classes=NUM_CLASS)
+    pca_components = 30
+    model = HybridSN_network(num_classes=NUM_CLASS, pca_components=pca_components)
     summary(model, (1, img_rows, img_columns, band_dim))
 
