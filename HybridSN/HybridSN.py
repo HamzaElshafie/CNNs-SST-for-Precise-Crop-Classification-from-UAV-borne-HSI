@@ -13,7 +13,7 @@ class HybridSN_network(nn.Module):
                     nn.Conv3d(
                     in_channels=1,
                     out_channels=8,
-                    kernel_size=(3, 3, 7)),
+                    kernel_size=(7, 3, 3)),
                     nn.ReLU(inplace=True))
 
         conv1_output_depth = (pca_components - 7) + 1 # Calculates the output depth after the 3D conv because there is no padding
@@ -23,7 +23,7 @@ class HybridSN_network(nn.Module):
                     nn.Conv3d(
                     in_channels=8,
                     out_channels=16,
-                    kernel_size=(3, 3, 5)),
+                    kernel_size=(5, 3, 3)),
                     nn.ReLU(inplace=True))
         
         conv2_output_depth = (conv1_output_depth - 5) + 1 # Calculates the output depth after the 3D conv because there is no padding
