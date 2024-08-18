@@ -6,7 +6,7 @@ from torchinfo import summary
 NUM_CLASS = 9
 
 class HybridSN_network(nn.Module):
-    def __init__(self, num_classes=9, pca_components=30):
+    def __init__(self, num_classes=9, pca_components=30, dropout=0.1):
         super(HybridSN_network, self).__init__()
 
         self.conv1 = nn.Sequential(
