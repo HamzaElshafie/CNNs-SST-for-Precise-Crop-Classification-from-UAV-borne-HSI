@@ -61,9 +61,13 @@ class HybridSN_network(nn.Module):
                    )
         
     def forward(self, x):
+        print(f"Input shape: {x.shape}")
         x = self.conv1(x)
+        print(f"After conv1: {x.shape}")
         x = self.conv2(x)
+        print(f"After conv2: {x.shape}")
         x = self.conv3(x)
+        print(f"After conv3: {x.shape}")
         x = x.view(x.size(0),x.size(1)*x.size(4),x.size(2),x.size(3))
         x = self.conv4(x)
         x = x.contiguous().view(x.size(0), -1)
