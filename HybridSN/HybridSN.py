@@ -46,10 +46,7 @@ class HybridSN_network(nn.Module):
                     kernel_size=(3, 3)),
                     nn.ReLU(inplace=True))
         
-        self.dense1 = nn.Sequential(
-                    nn.Linear(18496,256),
-                    nn.ReLU(inplace=True),
-                    nn.Dropout(p=0.4))
+        self.dense1 = None
         
         self.dense2 = nn.Sequential(
                     nn.Linear(256,128),
@@ -71,6 +68,14 @@ class HybridSN_network(nn.Module):
         x = x.view(x.size(0),x.size(1)*x.size(4),x.size(2),x.size(3))
         x = self.conv4(x)
         x = x.contiguous().view(x.size(0), -1)
+
+        if self.dense1 is None:
+            self.dense1 = nn.Sequential(
+                nn.Linear(x.size(1), 256),
+                nn.ReLU(inplace=True),
+                nn.Dropout(p=0.4)
+            )
+
         x = self.dense1(x)
         x = self.dense2(x)
         out = self.dense3(x)
