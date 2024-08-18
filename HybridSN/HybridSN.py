@@ -73,7 +73,6 @@ class HybridSN_network(nn.Module):
 if __name__ == '__main__':
     # Create dummy values for img_rows, img_columns, and band_dim
     img_rows, img_columns, band_dim = 550, 400, 270
-    pca_components = 30
-    model = HybridSN_network(num_classes=NUM_CLASS, pca_components=pca_components)
+    model = HybridSN_network(num_classes=NUM_CLASS, pca_components=30, dropout=0.1)
     summary(model, (1, img_rows, img_columns, band_dim))
 
