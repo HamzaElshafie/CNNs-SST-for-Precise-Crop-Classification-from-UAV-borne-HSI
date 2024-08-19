@@ -41,11 +41,17 @@ class HybridSN_network(nn.Module):
         with torch.no_grad():
             dummy_input = torch.randn(1, 1, pca_components, 30, 30)  
             dummy_input = self.conv1(dummy_input)
+            print(f"Shape after conv1: {dummy_input.shape}")
             dummy_input = self.conv2(dummy_input)
+            print(f"Shape after conv2: {dummy_input.shape}")
             dummy_input = self.conv3(dummy_input)
+            print(f"Shape after conv3: {dummy_input.shape}")
             dummy_input = dummy_input.view(dummy_input.size(0), dummy_input.size(1) * dummy_input.size(4), dummy_input.size(2), dummy_input.size(3))
+            print(f"Shape after flattening depth: {dummy_input.shape}")
             dummy_input = self.conv4(dummy_input)
+            print(f"Shape after conv4: {dummy_input.shape}")
             flattened_size = dummy_input.numel() // dummy_input.size(0)  # Calculate the flattened size
+            print(f"Flattened size before dense: {flattened_size}")
 
         self.dense1 = nn.Sequential(
             nn.Linear(flattened_size, 256),
