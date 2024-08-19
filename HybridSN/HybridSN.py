@@ -5,8 +5,11 @@ import torch.nn.functional as F
 NUM_CLASS = 9
 
 class HybridSN_network(nn.Module):
-    def __init__(self, num_classes=9, pca_components=30, dropout=0.1):
+    def __init__(self, num_classes=9, pca_components=30, patch_size=13, dropout=0.1):
         super(HybridSN_network, self).__init__()
+
+        self.pca_components = pca_components
+        self.patch_size = patch_size  # Now passed as an argument
 
         self.conv1 = nn.Sequential(
             nn.Conv3d(in_channels=1, out_channels=8, kernel_size=(7, 3, 3)),
@@ -28,7 +31,7 @@ class HybridSN_network(nn.Module):
         print(f"Output shape after 3D convolution layers: {self.x3d_shape}")
         
         self.conv4 = nn.Sequential(
-            nn.Conv2d(in_channels=self.x1_shape[1]*self.x1_shape[2], out_channels=64, kernel_size=(3, 3)),
+            nn.Conv2d(in_channels=self.x3d_shape[1] * self.x3d_shape[2], out_channels=64, kernel_size=(3, 3)),
             nn.ReLU(inplace=True)
         )
 
@@ -51,15 +54,15 @@ class HybridSN_network(nn.Module):
             nn.Linear(128, num_classes)
         )
 
-    def get_shape_after_2dConv(self):
-        x = torch.zeros((1, self.x1_shape[1]*self.x1_shape[2], self.x1_shape[3], self.x1_shape[4]))
+    def get_shape_after_2dconv(self):
+        x = torch.zeros((1, self.x3d_shape[1] * self.x3d_shape[2], self.x3d_shape[3], self.x3d_shape[4]))
         with torch.no_grad():
             x = self.conv4(x)
-            print
-        return x.shape[1]*x.shape[2]*x.shape[3]
+        return x.shape[1] * x.shape[2] * x.shape[3]
     
     def get_shape_after_3dconv(self):
-        x = torch.zeros((1, 1, self.in_chs, self.patch_size, self.patch_size))
+        # Use the passed patch size here
+        x = torch.zeros((1, 1, self.pca_components, self.patch_size, self.patch_size))
         with torch.no_grad():
             x = self.conv1(x)
             x = self.conv2(x)
@@ -82,10 +85,11 @@ class HybridSN_network(nn.Module):
 
 if __name__ == '__main__':
     pca_components = 30
-    model = HybridSN_network(num_classes=NUM_CLASS, pca_components=pca_components, dropout=0.1)
+    patch_size = 13
+    model = HybridSN_network(num_classes=NUM_CLASS, pca_components=pca_components, patch_size=patch_size, dropout=0.1)
     model.eval()
     print(model)
     # Create a dummy input with the correct number of PCA components
-    input = torch.randn(64, 1, pca_components, 13, 13)
+    input = torch.randn(64, 1, pca_components, patch_size, patch_size)
     y = model(input)
     print(y.size())
