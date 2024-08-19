@@ -9,7 +9,7 @@ class HybridSN_network(nn.Module):
         super(HybridSN_network, self).__init__()
 
         self.pca_components = pca_components
-        self.patch_size = patch_size  # Now passed as an argument
+        self.patch_size = patch_size
 
         self.conv1 = nn.Sequential(
             nn.Conv3d(in_channels=1, out_channels=8, kernel_size=(7, 3, 3)),
@@ -35,6 +35,7 @@ class HybridSN_network(nn.Module):
             nn.ReLU(inplace=True)
         )
 
+        # Get the shape after finishing the 2D convolution layer
         self.x2d_shape = self.get_shape_after_2dconv()
         print(f"Output shape after 2D convolution layer: {self.x2d_shape}")
 
@@ -61,7 +62,6 @@ class HybridSN_network(nn.Module):
         return x.shape[1] * x.shape[2] * x.shape[3]
     
     def get_shape_after_3dconv(self):
-        # Use the passed patch size here
         x = torch.zeros((1, 1, self.pca_components, self.patch_size, self.patch_size))
         with torch.no_grad():
             x = self.conv1(x)
@@ -70,7 +70,6 @@ class HybridSN_network(nn.Module):
         return x.shape
 
     def forward(self, x):
-        x = x.unsqueeze(1)
         x = self.conv1(x)
         x = self.conv2(x)
         x = self.conv3(x)
