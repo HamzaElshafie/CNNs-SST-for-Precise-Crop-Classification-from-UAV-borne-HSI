@@ -12,49 +12,31 @@ class HybridSN_network(nn.Module):
             nn.Conv3d(in_channels=1, out_channels=8, kernel_size=(7, 3, 3)),
             nn.ReLU(inplace=True)
         )
-
-        conv1_output_depth = (pca_components - 7) + 1 # Calculates the output depth after the 3D conv because there is no padding
-        print(f"Output dimension 1: {conv1_output_depth}")
         
         self.conv2 = nn.Sequential(
             nn.Conv3d(in_channels=8, out_channels=16, kernel_size=(5, 3, 3)),
             nn.ReLU(inplace=True)
         )
 
-        conv2_output_depth = (conv1_output_depth - 5) + 1 # Calculates the output depth after the 3D conv because there is no padding
-        print(f"Output dimension 2: {conv2_output_depth}")
-
         self.conv3 = nn.Sequential(
             nn.Conv3d(in_channels=16, out_channels=32, kernel_size=(3, 3, 3)),
             nn.ReLU(inplace=True)
         )
 
-        conv3_output_depth = (conv2_output_depth - 3) + 1 # Calculates the output depth after the 3D conv because there is no padding
-        print(f"Output dimension 3: {conv3_output_depth}")
+        # Get the shape after finishing all three 3D convolution layers
+        self.x3d_shape = self.get_shape_after_3dconv()
+        print(f"Output shape after 3D convolution layers: {self.x3d_shape}")
         
         self.conv4 = nn.Sequential(
-            nn.Conv2d(in_channels=32 * conv3_output_depth, out_channels=64, kernel_size=(3, 3)),
+            nn.Conv2d(in_channels=self.x1_shape[1]*self.x1_shape[2], out_channels=64, kernel_size=(3, 3)),
             nn.ReLU(inplace=True)
         )
-        
-        # Dummy input to calculate the size after conv4
-        with torch.no_grad():
-            dummy_input = torch.randn(1, 1, pca_components, 30, 30)  
-            dummy_input = self.conv1(dummy_input)
-            print(f"Shape after conv1: {dummy_input.shape}")
-            dummy_input = self.conv2(dummy_input)
-            print(f"Shape after conv2: {dummy_input.shape}")
-            dummy_input = self.conv3(dummy_input)
-            print(f"Shape after conv3: {dummy_input.shape}")
-            dummy_input = dummy_input.view(dummy_input.size(0), dummy_input.size(1) * dummy_input.size(4), dummy_input.size(2), dummy_input.size(3))
-            print(f"Shape after flattening depth: {dummy_input.shape}")
-            dummy_input = self.conv4(dummy_input)
-            print(f"Shape after conv4: {dummy_input.shape}")
-            flattened_size = dummy_input.numel() // dummy_input.size(0)  # Calculate the flattened size
-            print(f"Flattened size before dense: {flattened_size}")
+
+        self.x2d_shape = self.get_shape_after_2dconv()
+        print(f"Output shape after 2D convolution layer: {self.x2d_shape}")
 
         self.dense1 = nn.Sequential(
-            nn.Linear(flattened_size, 256),
+            nn.Linear(self.x2d_shape, 256),
             nn.ReLU(inplace=True),
             nn.Dropout(p=dropout)
         )
@@ -68,25 +50,42 @@ class HybridSN_network(nn.Module):
         self.dense3 = nn.Sequential(
             nn.Linear(128, num_classes)
         )
-        
+
+    def get_shape_after_2dConv(self):
+        x = torch.zeros((1, self.x1_shape[1]*self.x1_shape[2], self.x1_shape[3], self.x1_shape[4]))
+        with torch.no_grad():
+            x = self.conv4(x)
+            print
+        return x.shape[1]*x.shape[2]*x.shape[3]
+    
+    def get_shape_after_3dconv(self):
+        x = torch.zeros((1, 1, self.in_chs, self.patch_size, self.patch_size))
+        with torch.no_grad():
+            x = self.conv1(x)
+            x = self.conv2(x)
+            x = self.conv3(x)
+        return x.shape
+
     def forward(self, x):
+        x = x.unsqueeze(1)
         x = self.conv1(x)
         x = self.conv2(x)
         x = self.conv3(x)
-        x = x.view(x.size(0), x.size(1) * x.size(4), x.size(2), x.size(3))
+        x = x.view(x.shape[0],x.shape[1]*x.shape[2],x.shape[3],x.shape[4])
         x = self.conv4(x)
-        x = x.contiguous().view(x.size(0), -1)  
+        x = x.contiguous().view(x.shape[0], -1)
         x = self.dense1(x)
         x = self.dense2(x)
         out = self.dense3(x)
-        
         return out
+        
 
 if __name__ == '__main__':
     pca_components = 30
     model = HybridSN_network(num_classes=NUM_CLASS, pca_components=pca_components, dropout=0.1)
-    # Create a dummy input tensor
-    input = torch.randn(1, 1, pca_components, 550, 400)
+    model.eval()
+    print(model)
+    # Create a dummy input with the correct number of PCA components
+    input = torch.randn(64, 1, pca_components, 13, 13)
     y = model(input)
-    #summary(model, (1, img_rows, img_columns, band_dim))
     print(y.size())
