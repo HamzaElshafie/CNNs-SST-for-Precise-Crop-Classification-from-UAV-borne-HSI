@@ -128,7 +128,7 @@ def test(device, net, test_loader):
 
     return y_pred_test, y_test
 
-def get_cls_map(net, device, test_loader, y, dataset):
+def get_cls_map(net, device, test_loader, y, dataset, model):
     y_pred, y_new = test(device, net, test_loader)
 
     print(f"Shape of y_pred: {y_pred.shape}")
@@ -147,7 +147,7 @@ def get_cls_map(net, device, test_loader, y, dataset):
     y_re = np.reshape(y_list, (y.shape[0], y.shape[1], 3))
     gt_re = np.reshape(y_gt, (y.shape[0], y.shape[1], 3))
 
-    classification_map(y_re, y, 300, f'{main_dir}/classification_maps/{dataset}_predictions.eps')
-    classification_map(y_re, y, 300, f'{main_dir}/classification_maps/{dataset}_predictions.png')
-    classification_map(gt_re, y, 300, f'{main_dir}/classification_maps/{dataset}_gt.png')
+    classification_map(y_re, y, 300, f'{main_dir}/{model}/classification_maps/{dataset}_predictions.eps')
+    classification_map(y_re, y, 300, f'{main_dir}/{model}/classification_maps/{dataset}_predictions.png')
+    classification_map(gt_re, y, 300, f'{main_dir}/{model}/classification_maps/{dataset}_gt.png')
     print('------Get classification maps successful-------')
