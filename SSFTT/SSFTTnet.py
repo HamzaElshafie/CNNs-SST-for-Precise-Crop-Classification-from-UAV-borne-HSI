@@ -6,6 +6,7 @@ import torch.nn.functional as F
 from einops import rearrange
 from torch import nn
 import torch.nn.init as init
+import torch_xla.core.xla_model as xm 
 
 NUM_CLASS = 9
 
@@ -173,12 +174,14 @@ class SSFTTnet(nn.Module):
 
 
 if __name__ == '__main__':
+    device = xm.xla_device()
     pca_components = 30  # This would be determined dynamically in practice
     model = SSFTTnet(num_classes=NUM_CLASS, pca_components=pca_components)
+    model.to(device)
     model.eval()
     print(model)
 
     # Create a dummy input with the correct number of PCA components
-    input = torch.randn(64, 1, pca_components, 13, 13)
+    input = torch.randn(64, 1, pca_components, 13, 13).to(device)
     y = model(input)
     print(y.size())
