@@ -6,7 +6,6 @@ import torch.nn.functional as F
 from einops import rearrange
 from torch import nn
 import torch.nn.init as init
-import torch_xla.core.xla_model as xm 
 
 NUM_CLASS = 9
 
@@ -51,7 +50,6 @@ class MLP_Block(nn.Module):
 
 
 class Attention(nn.Module):
-
     def __init__(self, dim, heads=8, dropout=0.1):
         super().__init__()
         self.heads = heads
@@ -67,7 +65,6 @@ class Attention(nn.Module):
         self.do1 = nn.Dropout(dropout)
 
     def forward(self, x, mask=None):
-
         b, n, _, h = *x.shape, self.heads
         qkv = self.to_qkv(x).chunk(3, dim = -1)  # gets q = Q = Wq matmul x1, k = Wk mm x2, v = Wv mm x3
         q, k, v = map(lambda t: rearrange(t, 'b n (h d) -> b h n d', h=h), qkv)  # split into multi head attentions
@@ -174,14 +171,12 @@ class SSFTTnet(nn.Module):
 
 
 if __name__ == '__main__':
-    device = xm.xla_device()
     pca_components = 30  # This would be determined dynamically in practice
     model = SSFTTnet(num_classes=NUM_CLASS, pca_components=pca_components)
-    model.to(device)
     model.eval()
     print(model)
 
     # Create a dummy input with the correct number of PCA components
-    input = torch.randn(64, 1, pca_components, 13, 13).to(device)
+    input = torch.randn(64, 1, pca_components, 13, 13)
     y = model(input)
     print(y.size())
