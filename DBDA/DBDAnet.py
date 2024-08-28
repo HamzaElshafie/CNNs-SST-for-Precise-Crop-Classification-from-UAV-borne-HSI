@@ -101,9 +101,9 @@ class CAM_Module(Module):
         out = self.gamma*out + x  #C*H*W
         return out
 
-class DBDA_net(nn.Module):
+class DBDA_network_MISH(nn.Module):
     def __init__(self, band, classes):
-        super(DBDA_net, self).__init__()
+        super(DBDA_network_MISH, self).__init__()
 
         # spectral branch
         self.name = 'DBDA_MISH'
@@ -140,7 +140,8 @@ class DBDA_net(nn.Module):
                                     #swish()
             mish()
         )
-        kernel_3d = math.floor((band - 6) / 2)
+        #kernel_3d = math.floor((band - 6) / 2)
+        kernel_3d = min(math.floor((band - 6) / 2), band) 
         self.conv15 = nn.Conv3d(in_channels=60, out_channels=60,
                                 kernel_size=(1, 1, kernel_3d), stride=(1, 1, 1)) # kernel size随数据变化
 
