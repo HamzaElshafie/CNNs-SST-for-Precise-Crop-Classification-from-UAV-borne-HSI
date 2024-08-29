@@ -108,7 +108,7 @@ class DBDA_network_MISH(nn.Module):
         # spectral branch
         self.name = 'DBDA_MISH'
         self.conv11 = nn.Conv3d(in_channels=1, out_channels=24,
-                                kernel_size=(1, 1, 7), stride=(1, 1, 2))
+                                kernel_size=(7, 1, 1), stride=(1, 1, 2))
         # Dense block
         self.batch_norm11 = nn.Sequential(
                                     nn.BatchNorm3d(24,  eps=0.001, momentum=0.1, affine=True), # 动量默认值为0.1
@@ -117,7 +117,7 @@ class DBDA_network_MISH(nn.Module):
             mish()
         )
         self.conv12 = nn.Conv3d(in_channels=24, out_channels=12, padding=(0, 0, 3),
-                                kernel_size=(1, 1, 7), stride=(1, 1, 1))
+                                kernel_size=(7, 1, 1), stride=(1, 1, 1))
         self.batch_norm12 = nn.Sequential(
                                     nn.BatchNorm3d(36, eps=0.001, momentum=0.1, affine=True),
                                     #gelu_new()
@@ -125,7 +125,7 @@ class DBDA_network_MISH(nn.Module):
             mish()
         )
         self.conv13 = nn.Conv3d(in_channels=36, out_channels=12, padding=(0, 0, 3),
-                                kernel_size=(1, 1, 7), stride=(1, 1, 1))
+                                kernel_size=(7, 1, 1), stride=(1, 1, 1))
         self.batch_norm13 = nn.Sequential(
                                     nn.BatchNorm3d(48, eps=0.001, momentum=0.1, affine=True),
                                     #gelu_new()
@@ -133,7 +133,7 @@ class DBDA_network_MISH(nn.Module):
             mish()
         )
         self.conv14 = nn.Conv3d(in_channels=48, out_channels=12, padding=(0, 0, 3),
-                                kernel_size=(1, 1, 7), stride=(1, 1, 1))
+                                kernel_size=(7, 1, 1), stride=(1, 1, 1))
         self.batch_norm14 = nn.Sequential(
                                     nn.BatchNorm3d(60, eps=0.001, momentum=0.1, affine=True),
                                     #gelu_new()
@@ -142,7 +142,7 @@ class DBDA_network_MISH(nn.Module):
         )
         kernel_3d = math.floor((band - 6) / 2) 
         self.conv15 = nn.Conv3d(in_channels=60, out_channels=60,
-                                kernel_size=(1, 1, kernel_3d), stride=(1, 1, 1)) # kernel size随数据变化
+                                kernel_size=(kernel_3d, 1, 1), stride=(1, 1, 1)) # kernel size随数据变化
 
 
         # Spatial Branch
@@ -156,7 +156,7 @@ class DBDA_network_MISH(nn.Module):
             mish()
         )
         self.conv22 = nn.Conv3d(in_channels=24, out_channels=12, padding=(1, 1, 0),
-                                kernel_size=(3, 3, 1), stride=(1, 1, 1))
+                                kernel_size=(1, 3, 3), stride=(1, 1, 1))
         self.batch_norm22 = nn.Sequential(
                                     nn.BatchNorm3d(36, eps=0.001, momentum=0.1, affine=True),
                                     #gelu_new()
@@ -164,7 +164,7 @@ class DBDA_network_MISH(nn.Module):
             mish()
         )
         self.conv23 = nn.Conv3d(in_channels=36, out_channels=12, padding=(1, 1, 0),
-                                kernel_size=(3, 3, 1), stride=(1, 1, 1))
+                                kernel_size=(1, 3, 3), stride=(1, 1, 1))
         self.batch_norm23 = nn.Sequential(
                                     nn.BatchNorm3d(48, eps=0.001, momentum=0.1, affine=True),
                                     #gelu_new()
@@ -172,12 +172,12 @@ class DBDA_network_MISH(nn.Module):
             mish()
         )
         self.conv24 = nn.Conv3d(in_channels=48, out_channels=12, padding=(1, 1, 0),
-                                kernel_size=(3, 3, 1), stride=(1, 1, 1))
+                                kernel_size=(1, 3, 3), stride=(1, 1, 1))
 
 
         self.conv25 = nn.Sequential(
                                 nn.Conv3d(in_channels=1, out_channels=1, padding=(1, 1, 0),
-                                kernel_size=(3, 3, 2), stride=(1, 1, 1)),
+                                kernel_size=(2, 3, 3), stride=(1, 1, 1)),
                                 nn.Sigmoid()
         )
 
