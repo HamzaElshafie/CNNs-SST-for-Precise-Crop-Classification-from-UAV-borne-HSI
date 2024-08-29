@@ -148,7 +148,7 @@ class DBDA_network_MISH(nn.Module):
 
         # Spatial Branch
         self.conv21 = nn.Conv3d(in_channels=1, out_channels=24,
-                                kernel_size=(1, 1, band), stride=(1, 1, 1))
+                                kernel_size=(band, 1, 1), stride=(1, 1, 1))
         # Dense block
         self.batch_norm21 = nn.Sequential(
                                     nn.BatchNorm3d(24, eps=0.001, momentum=0.1, affine=True),
