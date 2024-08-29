@@ -15,7 +15,7 @@ class mish(nn.Module):
 
 class PAM_Module(Module):
     """ Position attention module"""
-    #Ref from SAGAN
+    # Ref from SAGAN
     def __init__(self, in_dim):
         super(PAM_Module, self).__init__()
         self.chanel_in = in_dim
@@ -96,7 +96,7 @@ class DBDA_network_MISH(nn.Module):
                                     nn.BatchNorm3d(60, eps=0.001, momentum=0.1, affine=True), mish()
         )
         kernel_3d = math.floor((band - 6) / 2) 
-        print(f"Kernel_3d = {kernel_3d}")
+        
         self.conv15 = nn.Conv3d(in_channels=60, out_channels=60,
                                 kernel_size=(kernel_3d, 1, 1), stride=(1, 1, 1)) 
 
