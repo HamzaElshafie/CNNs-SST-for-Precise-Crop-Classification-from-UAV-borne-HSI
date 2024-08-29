@@ -180,13 +180,19 @@ class DBDA_network_MISH(nn.Module):
         x14 = self.conv14(x14)
 
         x15 = torch.cat((x11, x12, x13, x14), dim=1)
-
         x16 = self.batch_norm14(x15)
         x16 = self.conv15(x16)
 
+        # Reshape for attention
+        b, c, d, h, w = x16.size()
+        x_spatial = x16.view(b, c * d, h, w)  # Flatten depth (spectral) dimension into channels
+
         # Spectral attention
-        x1 = self.attention_spectral(x16)
-        x1 = torch.mul(x1, x16)
+        x1 = self.attention_spectral(x_spatial)
+        x1 = torch.mul(x1, x_spatial)
+
+        # Reshape back to 5D
+        x1 = x1.view(b, c, d, h, w)
 
         # Spatial branch
         x21 = self.conv21(X)
@@ -203,9 +209,15 @@ class DBDA_network_MISH(nn.Module):
 
         x25 = torch.cat((x21, x22, x23, x24), dim=1)
 
+        # Reshape for attention
+        x_spatial = x25.view(b, c * d, h, w)  # Flatten depth (spectral) dimension into channels
+
         # Spatial attention
-        x2 = self.attention_spatial(x25)
-        x2 = torch.mul(x2, x25)
+        x2 = self.attention_spatial(x_spatial)
+        x2 = torch.mul(x2, x_spatial)
+
+        # Reshape back to 5D
+        x2 = x2.view(b, c, d, h, w)
 
         # Model 1
         x1 = self.batch_norm_spectral(x1)
