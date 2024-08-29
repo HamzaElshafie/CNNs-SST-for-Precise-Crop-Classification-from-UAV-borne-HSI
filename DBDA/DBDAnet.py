@@ -95,8 +95,9 @@ class DBDA_network_MISH(nn.Module):
         self.batch_norm14 = nn.Sequential(
                                     nn.BatchNorm3d(60, eps=0.001, momentum=0.1, affine=True), mish()
         )
-        kernel_3d = math.floor((band - 6) / 2) 
         
+        kernel_3d = math.floor((band - 6) / 2) 
+
         self.conv15 = nn.Conv3d(in_channels=60, out_channels=60,
                                 kernel_size=(kernel_3d, 1, 1), stride=(1, 1, 1)) 
 
