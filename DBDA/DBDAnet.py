@@ -69,7 +69,7 @@ class CAM_Module(Module):
         return out
 
 class DBDA_network_MISH(nn.Module):
-    def __init__(self, band, classes):
+    def __init__(self, band, classes, dropout=0.1):
         super(DBDA_network_MISH, self).__init__()
 
         # spectral branch
@@ -129,20 +129,22 @@ class DBDA_network_MISH(nn.Module):
 
         self.batch_norm_spectral = nn.Sequential(
                                     nn.BatchNorm3d(60,  eps=0.001, momentum=0.1, affine=True), mish(),
-                                    nn.Dropout(p=0.5)
+                                    nn.Dropout(p=dropout)
         )
         self.batch_norm_spatial = nn.Sequential(
                                     nn.BatchNorm3d(60,  eps=0.001, momentum=0.1, affine=True), mish(),
-                                    nn.Dropout(p=0.5)
+                                    nn.Dropout(p=dropout)
         )
 
         self.global_pooling = nn.AdaptiveAvgPool3d(1)
         self.full_connection = nn.Sequential(
-                                #nn.Dropout(p=0.5),
-                                nn.Linear(120, classes) # ,
-                                # nn.Softmax()
+                                nn.Linear(120, classes)
         )
 
+        self.full_connection = nn.Sequential(
+                                nn.Dropout(p=dropout),
+                                nn.Linear(120, classes)
+        )
         self.attention_spectral = CAM_Module(60)
         self.attention_spatial = PAM_Module(60)
 
