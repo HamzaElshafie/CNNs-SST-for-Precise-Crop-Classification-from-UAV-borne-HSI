@@ -39,7 +39,8 @@ class PAM_Module(Module):
                 attention: B X (HxW) X (HxW)
         """
         # m_batchsize, channle, height, width, C = x.size()
-        x = x.squeeze(-1)
+        #x = x.squeeze(-1)
+        x = x.squeeze(2)
         # m_batchsize, C, height, width, channle = x.size()
 
         # proj_query = self.query_conv(x).view(m_batchsize, -1, width*height*channle).permute(0, 2, 1)
@@ -55,6 +56,7 @@ class PAM_Module(Module):
 
         print('Shape of x in PAM:', x.size())
 
+        # m_batchsize, C, height, width = x.size()
         m_batchsize, C, height, width = x.size()
         proj_query = self.query_conv(x).view(m_batchsize, -1, width * height).permute(0, 2, 1)
         proj_key = self.key_conv(x).view(m_batchsize, -1, width * height)
@@ -65,7 +67,7 @@ class PAM_Module(Module):
         out = torch.bmm(proj_value, attention.permute(0, 2, 1))
         out = out.view(m_batchsize, C, height, width)
 
-        out = (self.gamma*out + x).unsqueeze(-1)
+        out = (self.gamma*out + x).unsqueeze(2)
         return out
 
 
@@ -86,8 +88,9 @@ class CAM_Module(Module):
                 out : attention value + input feature
                 attention: B X C X C
         """
-        print('Shape of x in PAM:', x.size())
-        m_batchsize, C, height, width, channle = x.size()
+        print('Shape of x in CAM:', x.size())
+        #m_batchsize, C, height, width, channle = x.size()
+        m_batchsize, C, depth, height, width = x.size()
         #print(x.size())
         proj_query = x.view(m_batchsize, C, -1)
         proj_key = x.view(m_batchsize, C, -1).permute(0, 2, 1) #形状转换并交换维度
@@ -97,7 +100,7 @@ class CAM_Module(Module):
         proj_value = x.view(m_batchsize, C, -1)
 
         out = torch.bmm(attention, proj_value)
-        out = out.view(m_batchsize, C, height, width, channle)
+        out = out.view(m_batchsize, C, depth, height, width)
         # print('out', out.shape)
         # print('x', x.shape)
 
