@@ -54,8 +54,6 @@ class PAM_Module(Module):
         # print('out', out.shape)
         # print('x', x.shape)
 
-        print('Shape of x in PAM:', x.size())
-
         # m_batchsize, C, height, width = x.size()
         m_batchsize, C, height, width = x.size()
         proj_query = self.query_conv(x).view(m_batchsize, -1, width * height).permute(0, 2, 1)
@@ -88,7 +86,6 @@ class CAM_Module(Module):
                 out : attention value + input feature
                 attention: B X C X C
         """
-        print('Shape of x in CAM:', x.size())
         #m_batchsize, C, height, width, channle = x.size()
         m_batchsize, C, depth, height, width = x.size()
         #print(x.size())
