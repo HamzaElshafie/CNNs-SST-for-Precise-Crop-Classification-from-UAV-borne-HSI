@@ -115,7 +115,7 @@ class SSFTTnet(nn.Module):
             nn.ReLU(),
         )
 
-        conv_output_depth = int((pca_components - 3) + 1 / 1)  # Calculates the output depth after the 3D conv because there is no padding
+        conv_output_depth = int((pca_components - 3) + 1 / 1) # Calculates the output depth after the 3D conv because there is no padding
 
         self.conv2d_features = nn.Sequential(
             nn.Conv2d(in_channels=8 * conv_output_depth, out_channels=64, kernel_size=(3, 3)),
@@ -149,15 +149,15 @@ class SSFTTnet(nn.Module):
         x = self.conv3d_features(x)
         x = rearrange(x, 'b c d h w -> b (c d) h w')
         x = self.conv2d_features(x)
-        flattened_feature = rearrange(x, 'b c h w -> b (h w) c')  # Flattened Feature X
+        x = rearrange(x, 'b c h w -> b (h w) c')
 
         wa = rearrange(self.token_wA, 'b h w -> b w h')  # Transpose
-        A = torch.einsum('bij,bjk->bik', flattened_feature, wa)
+        A = torch.einsum('bij,bjk->bik', x, wa)
         A = rearrange(A, 'b h w -> b w h')  # Transpose
-        semantic_group = A.softmax(dim=-1)  # Semantic Group A
+        A = A.softmax(dim=-1)
 
-        VV = torch.einsum('bij,bjk->bik', flattened_feature, self.token_wV)
-        T = torch.einsum('bij,bjk->bik', semantic_group, VV)  # Tokens T
+        VV = torch.einsum('bij,bjk->bik', x, self.token_wV)
+        T = torch.einsum('bij,bjk->bik', A, VV)
 
         cls_tokens = self.cls_token.expand(x.shape[0], -1, -1)
         x = torch.cat((cls_tokens, T), dim=1)
@@ -167,7 +167,8 @@ class SSFTTnet(nn.Module):
         x = self.to_cls_token(x[:, 0])
         x = self.nn1(x)
 
-        return x, flattened_feature, wa, semantic_group, T
+        return x
+
 
 if __name__ == '__main__':
     pca_components = 30  # This would be determined dynamically in practice
